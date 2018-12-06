@@ -34,21 +34,22 @@ app.get('/api/bodyGroups/:bodyGroup', (req, res) => {
   })
 })
 
-app.post('/api/bodyGroups/:group', (req, res) => {
+app.post('/api/bodyGroups/:bodyGroup', (req, res) => {
   res.header('Access-Control-Allow-Origin', '*');
+  const newGroup = req.params.bodyGroup;
   mongoClient.connect(url, (err, db) => {
     if (err) throw err;
     const dbo = db.db('bodyGroups');
-    dbo.createCollection(req.params.group, (err, response) => {
+    dbo.createCollection(newGroup, (err, response) => {
       if (err) throw err;
-      console.log(`${req.params.group} collection was created!`);
-      res.status(201).json(`${req.params.group} was created!`)
+      console.log(`${newGroup} collection was created!`);
+      res.status(201).json(`${newGroup} was created!`)
       db.close();
     })
   })
 })
 
-app.post('/api/bodyGroups/new/:group', (req, res) => {
+app.post('/api/bodyGroups/new/:exercise', (req, res) => {
   const newExercise = req.body;
   console.log(newExercise);
   const confirmation = `${newExercise.name} was added!`
@@ -56,7 +57,7 @@ app.post('/api/bodyGroups/new/:group', (req, res) => {
   mongoClient.connect(url, async (err, db) => {
     if (err) throw err;
     const dbo = db.db('bodyGroups');
-    if (await checkForDuplicates(dbo, req.params.group, newExercise.name)) {
+    if (await checkForDuplicates(dbo, req.params.exercise, newExercise.name)) {
       return res.status(402).send('It already exists')
     }
     dbo.collection(req.params.group).insertOne(newExercise, (err, res) => {
