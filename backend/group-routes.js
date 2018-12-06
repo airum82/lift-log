@@ -1,6 +1,7 @@
 const mongodb = require('mongodb')
 const mongoClient = mongodb.MongoClient
 const url = 'mongodb://localhost:27017/'
+const bodyGroupsDb = 'bodyGroups';
 
 module.exports = {
   checkForDuplicates: (dbo, collection, name) => {
@@ -12,7 +13,7 @@ module.exports = {
       if(err) {
         console.log('there was an error:', err);
       } else {
-        const dbo = db.db('bodyGroups');
+        const dbo = db.db(bodyGroupsDb);
         dbo.collection(req.params.bodyGroup).find({}).toArray((err, result) => {
           if(err) throw err;
           db.close()
@@ -26,7 +27,7 @@ module.exports = {
     const newGroup = req.params.bodyGroup;
     mongoClient.connect(url, (err, db) => {
       if (err) throw err;
-      const dbo = db.db('bodyGroups');
+      const dbo = db.db(bodyGroupsDb);
       dbo.createCollection(newGroup, (err, response) => {
         if (err) throw err;
         console.log(`${newGroup} collection was created!`);
@@ -42,7 +43,7 @@ module.exports = {
     res.header('Access-Control-Allow-Origin', '*');
     mongoClient.connect(url, async (err, db) => {
       if (err) throw err;
-      const dbo = db.db('bodyGroups');
+      const dbo = db.db(bodyGroupsDb);
       if (await checkForDuplicates(dbo, req.params.exercise, newExercise.name)) {
         return res.status(402).send('It already exists')
       }

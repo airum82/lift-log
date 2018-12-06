@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const routes = require('./routes');
+const routes = require('./group-routes');
 
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
