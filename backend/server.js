@@ -17,7 +17,8 @@ app.get('/api/bodyGroups/:bodyGroup', groupRoutes.fetchWorkoutGroup)
 app.post('/api/bodyGroups/:bodyGroup', groupRoutes.createNewGroup)
 app.post('/api/bodyGroups/new/:exercise', groupRoutes.createNewExercise)
 
-app.get('/api/log', logRoutes.fetchLog);
+app.get('/api/log/:date', logRoutes.fetchLog);
+app.get('/api/log', logRoutes.fetchAllLogs);
 app.post('/api/log/:date', logRoutes.createNewLog);
 
 app.listen(app.get('port'), () => {

@@ -7,13 +7,14 @@ const useNewUrlParser = { useNewUrlParser: true };
 module.exports = {
   fetchLog: (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
+    const date = req.params.date;
     mongoClient.connect(url, useNewUrlParser,
       (err, db) => {
         if(err) {
           console.log('there was an error:', err);
         } else {
           const dbo = db.db(liftDb);
-          dbo.collection('log').find({}).toArray((err, result) => {
+          dbo.collection(date).find({}).toArray((err, result) => {
             if(err) throw err;
             db.close();
             return res.status(200).json(result)
@@ -40,6 +41,23 @@ module.exports = {
         }
       }
     )
-
+  },
+  fetchAllLogs: (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    mongoClient.connect(url, useNewUrlParser,
+      (err, db) => {
+        if(err) {
+          console.log('there was an error: ', err)
+        }
+        else {
+          const dbo = db.db(liftDb);
+          dbo.listCollections().toArray((err, result) => {
+            if(err) throw err;
+            db.close()
+            return res.status(200).json(result);
+          })
+        }
+      }
+    )
   }
 }
