@@ -79,5 +79,25 @@ module.exports = {
         }
       }
     )
+  },
+  addSet: (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    const { date }  = req.params;
+    const {sets, name} = req.body;
+    mongoClient.connect(url, (err, db) => {
+      if(err) {
+        console.log('There was an error: ', err);
+      } else {
+        const dbo = db.db(liftDb);
+        dbo.collection(date).updateOne({ name },
+          { $set: { name, sets } }, (err, result) => {
+              if(err) throw err;
+              console.log('success!');
+              db.close();
+              return res.status(201).send('new set was added!');
+            }
+        )
+      }
+    })
   }
 }
