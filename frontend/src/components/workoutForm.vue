@@ -12,9 +12,11 @@
         <option value="triceps">Triceps</option>
         <option value="forearms">Forearms</option>
       </select>
+      <input type="text" v-model="exercise"/>
+      <button v-on:click="this.createLift">create</button>
     </form>
     <section class="lift-list">
-      <li v-for="exercise in this.exercises">{{ exercise.exercise }}</li>
+      <li v-for="exercise in this.exercises">{{ exercise.name }}</li>
     </section>
   </div>
 </template>
@@ -27,12 +29,23 @@
       return {
         muscleGroup: 'Select Muscle Group',
         exercises: [],
-        err: ''
+        err: '',
+        exercise: ''
       }
     },
     methods: {
-      addLift(event) {
-        
+      createLift(event) {
+        return fetch(`http://localhost:3000/api/bodyGroups/${this.muscleGroup}/new`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          },
+          body: JSON.stringify({ name: this.exercise })
+        })
+        .then(res => res.json())
+        .then(result => console.log(result))
+        .catch(err => console.log(err))
       },
       grabLifts() {
         return fetch(`http://localhost:3000/api/bodyGroups/${this.muscleGroup}`)

@@ -3,7 +3,8 @@ const app = express();
 const bodyParser = require('body-parser');
 const groupRoutes = require('./group-routes');
 const logRoutes = require('./log-routes');
-
+const cors = require('cors');
+app.use(cors());
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 app.set('port', process.env.PORT || 3000);
@@ -15,7 +16,7 @@ app.get('/', (req, res) => {
 //body group endpoints
 app.get('/api/bodyGroups/:bodyGroup', groupRoutes.fetchWorkoutGroup)
 app.post('/api/bodyGroups/:bodyGroup', groupRoutes.createNewGroup)
-app.post('/api/bodyGroups/new/:exercise', groupRoutes.createNewExercise)
+app.post('/api/bodyGroups/:group/new', groupRoutes.createNewExercise)
 //workout endpoints
 app.get('/api/log/:date', logRoutes.fetchLog);
 app.get('/api/log', logRoutes.fetchAllLogs);

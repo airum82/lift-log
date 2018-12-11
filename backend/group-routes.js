@@ -3,10 +3,11 @@ const mongoClient = mongodb.MongoClient
 const url = 'mongodb://localhost:27017/'
 const bodyGroupsDb = 'bodyGroups';
 
+const checkForDuplicates = (dbo, collection, name) => {
+  return dbo.collection(collection).findOne({ name: name })
+}
+
 module.exports = {
-  checkForDuplicates: (dbo, collection, name) => {
-    return dbo.collection(collection).findOne({ name: name })
-  },
   fetchWorkoutGroup: (req, res) => {
     res.header('Access-Control-Allow-Origin', '*')
     mongoClient.connect(url, async (err, db) => {
@@ -37,17 +38,19 @@ module.exports = {
     })
   },
   createNewExercise: (req, res) => {
-    const newExercise = req.body;
-    console.log(newExercise);
-    const confirmation = `${newExercise.name} was added!`
+    console.log('fire');
     res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    const newExercise = req.body;
+    const confirmation = `${newExercise.name} was added!`
     mongoClient.connect(url, async (err, db) => {
       if (err) throw err;
       const dbo = db.db(bodyGroupsDb);
-      if (await checkForDuplicates(dbo, req.params.exercise, newExercise.name)) {
-        return res.status(402).send('It already exists')
-      }
-      dbo.collection(req.params.group).insertOne(newExercise, (err, res) => {
+      // if (await checkForDuplicates(dbo, req.params.exercise, newExercise.name)) {
+      //   db.close();
+      //   return res.status(402).send('It already exists')
+      // }
+      dbo.collection(req.params.group).insertOne(newExercise, (err, result) => {
         if (err) throw err;
         console.log(confirmation);
         db.close();
