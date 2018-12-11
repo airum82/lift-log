@@ -22,6 +22,7 @@ app.get('/api/log', logRoutes.fetchAllLogs);
 app.post('/api/log/:date', logRoutes.createNewLog);
 app.post('/api/log/:date/new', logRoutes.AddLift);
 app.put('/api/log/:date', logRoutes.addSet);
+app.delete('/api/log/:date', logRoutes.deleteLift);
 
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on ${app.get('port')}.`);

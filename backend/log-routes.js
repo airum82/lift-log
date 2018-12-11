@@ -99,5 +99,22 @@ module.exports = {
         )
       }
     })
+  },
+  deleteLift: (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    const date = req.params.date;
+    const doc = req.body;
+    mongoClient.connect(url, (err, db) => {
+      if(err) {
+        console.log('There was an error: ', err);
+      }
+      const dbo = db.db(liftDb);
+      dbo.collection(date).deleteOne(doc, (err, obj) => {
+        if(err) throw err;
+        console.log(`${doc.name} was deleted!`)
+        db.close();
+        return res.send(`${doc.name} was deleted!`)
+      })
+    })
   }
 }
