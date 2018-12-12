@@ -36,7 +36,7 @@ module.exports = {
             if(err) throw err;
             console.log('collection created');
             db.close();
-            return res.status(201).send('new log created!')
+            return res.status(201).json('new log created!')
           })
         }
       }
