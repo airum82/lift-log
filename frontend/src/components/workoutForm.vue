@@ -21,7 +21,7 @@
       </div>
     </form>
     <section class="lift-list">
-      <ul>
+      <ul v-on:click="this.addLift">
         <li v-for="exercise in this.exercises">{{ exercise.name }}</li>
       </ul>
     </section>
@@ -87,6 +87,9 @@
           .then(response => response.json())
           .then(result => this.exercises = result)
           .catch(err => this.err = err)
+      },
+      addLift(event) {
+        console.log((event.target).innerText);
       }
     },
     mounted() {
