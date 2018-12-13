@@ -1,12 +1,23 @@
 <template>
   <section class="lifts">
-      <article v-for="lift in this.workout">
+      <article v-for="lift in lifts">
         <h3>{{ lift.name }}</h3>
-        <button v-on:click="addSet">Add Set</button>
-        <ul v-for="set in lift.sets"> 
-          <li>weight: {{ set.weight }}</li>
-          <li>reps: {{ set.reps }}</li>
-        </ul>
+        <button v-on:click="toggleForm">{{ showSetForm ? 'cancel' : 'add set' }}</button>
+        <form v-if="showSetForm">
+          <label for="weight">weight:</label>
+          <input type="text" id="weight" v-model="weight"/>
+          <label for="reps">reps:</label>
+          <input type="text" id="reps" v-model="reps"/>
+          <button v-on:click="(event) => {
+              addSet(event, weight, reps);
+              toggleForm();
+            }">create</button>
+        </form>
+        <div v-for="set in lift.sets"> 
+          <p>weight: {{ set.weight }}</p>
+          <p>reps: {{ set.reps }}</p>
+          <hr>
+        </div>
       </article>
   </section>
 </template>
@@ -14,31 +25,16 @@
 <script>
   export default {
     name: 'workout',
-    props: ['lifts'],
+    props: ['lifts', 'addSet'],
     data: () => ({
-      workout: []
+      showSetForm: false,
+      weight: '',
+      reps: ''
     }),
     methods: {
-      addSet(event) {
-        const name = (event.target.parentElement.children[0]).innerHTML;
-        this.workout = this.workout.map(lift => {
-          if(lift.name === name) {
-            return {
-              name,
-              sets: [...lift.sets, {
-                weight: 0,
-                reps: 0
-              }]
-            }
-          }
-          return lift;
-        })
+      toggleForm() {
+        this.showSetForm = !this.showSetForm
       }
-    },
-    updated() {
-      console.log('changed')
-      this.workout = [...this.lifts]
     }
-
   }
 </script>
