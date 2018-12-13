@@ -1,7 +1,7 @@
 <template>
   <section class="lifts">
     <ul>
-      <li v-for="exercise in exercises">{{exercise}}</li>
+      <li v-for="lift in lifts">{{ lift }}</li>
     </ul>
   </section>
 </template>
@@ -9,7 +9,7 @@
 <script>
   export default {
     name: 'workout',
-    props: ['exercises'],
+    props: ['lifts'],
     data: () => ({
       
     }),

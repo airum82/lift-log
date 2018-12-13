@@ -1,9 +1,9 @@
 <template>
   <div>
     <form>
-      <button v-on:click="this.startNewWorkout">click here</button>
+      <button v-on:click="startNewWorkout">click here</button>
       <p>Select muscle group</p>
-      <select class="group-list" v-model="muscleGroup" v-on:change="this.grabLifts">
+      <select class="group-list" v-model="muscleGroup" v-on:change="fetchLifts">
         <option value="chest">Chest</option>
         <option value="back">Back</option>
         <option value="shoulders">Shoulders</option>
@@ -17,12 +17,12 @@
         <h3>Create new lift or select from choices below</h3>
         <label for="lift">new lift:</label>
         <input type="text" v-model="exercise" id="lift"/>
-        <button v-on:click="this.createLift">create</button>
+        <button v-on:click="createLift">create</button>
       </div>
     </form>
     <section class="lift-list">
-      <ul v-on:click="this.addLift">
-        <li v-for="exercise in this.exercises">{{ exercise.name }}</li>
+      <ul v-on:click="addLift">
+        <li v-for="exercise in exercises">{{ exercise.name }}</li>
       </ul>
     </section>
   </div>
@@ -31,7 +31,7 @@
 <script>
   export default {
     name: 'workoutForm',
-    props: [ "grabCategory"],
+    props: [ "grabLift" ],
     data: () => {
       return {
         muscleGroup: 'Select Muscle Group',
@@ -82,14 +82,15 @@
         .then(result => console.log(result))
         .catch(err => console.log(err))
       },
-      grabLifts() {
+      fetchLifts() {
         return fetch(`http://localhost:3000/api/bodyGroups/${this.muscleGroup}`)
           .then(response => response.json())
           .then(result => this.exercises = result)
           .catch(err => this.err = err)
       },
       addLift(event) {
-        console.log((event.target).innerText);
+        const lift = (event.target).innerText;
+        this.grabLift(lift);
       }
     },
     mounted() {

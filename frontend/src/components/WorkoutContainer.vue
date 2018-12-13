@@ -2,8 +2,8 @@
   <section>
     <button @click="goBack">back</button>
     <p>Let's start a new workout</p>
-    <workoutForm v-bind:grabCategory="grabCategory"></workoutForm>
-    <workout></workout>
+    <workoutForm v-bind:grabLift="grabLift"></workoutForm>
+    <workout v-bind:lifts="lifts"></workout>
   </section>
 </template>
 
@@ -19,15 +19,15 @@
     data: function() {
       return {
         category: '',
-        exercises: []
+        lifts: []
       }
     },
     methods: {
       goBack() {
         this.$router.back();
       },
-      grabCategory(event) {
-        this.category = event.target.value
+      grabLift(lift) {
+        this.lifts = [...this.lifts, lift]
       }
     }
   }
