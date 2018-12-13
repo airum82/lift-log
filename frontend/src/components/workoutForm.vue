@@ -89,7 +89,11 @@
           .catch(err => this.err = err)
       },
       addLift(event) {
-        const lift = (event.target).innerText;
+        const name = (event.target).innerText;
+        const lift = {
+          name,
+          sets: []
+        }
         this.grabLift(lift);
       }
     },
