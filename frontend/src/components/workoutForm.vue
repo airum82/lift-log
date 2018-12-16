@@ -31,22 +31,13 @@
 <script>
   export default {
     name: 'workoutForm',
-    props: [ "grabLift" ],
+    props: [ "grabLift", "currentDay" ],
     data: () => {
       return {
         muscleGroup: 'Select Muscle Group',
         exercises: [],
         err: '',
         exercise: ''
-      }
-    },
-    computed: {
-      currentDay() {
-        const today = new Date();
-        const day = today.getDate().toString();
-        const month = (today.getMonth() + 1).toString();
-        const year = today.getFullYear().toString();
-        return day + month + year;
       }
     },
     methods: {
@@ -95,10 +86,21 @@
           sets: []
         }
         this.grabLift(lift);
+        this.addLiftToDb(lift)
+      },
+      addLiftToDb(lift) {
+        fetch(`http://localhost:3000/api/log/${this.currentDay}/new`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json'},
+          body: JSON.stringify(lift)
+        })
+        .then(response => response.json())
+        .then(result => console.log(result))
+        .catch(err => console.log(err));
       }
     },
     mounted() {
-      this.fetchWorkoutLog();
+      this.fetchCurrentLog();
     }
   }
 </script>

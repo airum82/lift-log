@@ -74,7 +74,7 @@ module.exports = {
             if(err) throw err;
             console.log('new lift added!');
             db.close();
-            return res.status(201).send(`${lift.name} was added!`)
+            return res.status(201).json(`${lift.name} was added!`)
           })
         }
       }

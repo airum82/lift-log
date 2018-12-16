@@ -2,8 +2,8 @@
   <section>
     <button @click="goBack">back</button>
     <p>Let's start a new workout</p>
-    <workoutForm v-bind:grabLift="grabLift"></workoutForm>
-    <workout v-bind:lifts="lifts" v-bind:addSet="addSet"></workout>
+    <workoutForm v-bind:grabLift="grabLift" v-bind:currentDay="currentDay"></workoutForm>
+    <workout v-bind:lifts="lifts" v-bind:addSet="addSet" v-bind:currentDay="currentDay"></workout>
   </section>
 </template>
 
@@ -22,12 +22,27 @@
         lifts: []
       }
     },
+    computed: {
+      currentDay() {
+        const today = new Date();
+        const day = today.getDate().toString();
+        const month = (today.getMonth() + 1).toString();
+        const year = today.getFullYear().toString();
+        return day + month + year;
+      }
+    },
     methods: {
       goBack() {
         this.$router.back();
       },
       grabLift(lift) {
         this.lifts = [...this.lifts, lift]
+      },
+      fetchCurrentLog() {
+        return fetch(`http://localhost:3000/api/log/${this.currentDay}`)
+          .then(response => response.json())
+          .then(result => this.lifts = result)
+          .catch(err => console.log(err))
       },
       addSet(event, weight, reps) {
         event.preventDefault();
@@ -47,6 +62,9 @@
           return lift
         })
       }
+    },
+    mounted() {
+      this.fetchCurrentLog();
     }
   }
 </script>

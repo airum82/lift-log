@@ -25,7 +25,7 @@
 <script>
   export default {
     name: 'workout',
-    props: ['lifts', 'addSet'],
+    props: ['lifts', 'addSet', 'currentDay'],
     data: () => ({
       showSetForm: false,
       weight: '',
@@ -34,7 +34,7 @@
     methods: {
       toggleForm() {
         this.showSetForm = !this.showSetForm
-      }
+      },
     }
   }
 </script>
