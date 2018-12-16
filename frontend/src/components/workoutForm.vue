@@ -100,7 +100,6 @@
       }
     },
     mounted() {
-      this.fetchCurrentLog();
     }
   }
 </script>
