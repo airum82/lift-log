@@ -21,7 +21,7 @@
       </div>
     </form>
     <section class="lift-list">
-      <ul v-on:click="addLift">
+      <ul v-on:click="addLift(exercise.name)">
         <li v-for="exercise in exercises">{{ exercise.name }}</li>
       </ul>
     </section>
@@ -79,8 +79,8 @@
           .then(result => this.exercises = result)
           .catch(err => this.err = err)
       },
-      addLift(event) {
-        const name = (event.target).innerText;
+      addLift(name) {
+        // const name = (event.target).innerText;
         const lift = {
           name,
           sets: []

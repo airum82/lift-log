@@ -1,12 +1,20 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view v-bind:grabAccount="grabAccount"/>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data: {
+    account: {}
+  },
+  methods: {
+    grabAccount(account) {
+      this.account = account;
+    }
+  }
 }
 </script>
 
