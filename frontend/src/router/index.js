@@ -13,7 +13,7 @@ export default new Router({
     {
       path: '/',
       name: 'Landing',
-      props: { account: 'account' },
+      props: true,
       component: Landing
     },
     {
@@ -24,7 +24,7 @@ export default new Router({
     {
       path: '/log',
       name: 'Log',
-      props: { grabAccount: "grabAccount" },
+      props: true,
       component: Log
     },
     {

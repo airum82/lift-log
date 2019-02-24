@@ -2,7 +2,7 @@
   <div id="app">
     <router-view 
       v-bind:grabAccount="grabAccount"
-      v-bind:user="account"
+      v-bind:account="account"
     />
   </div>
 </template>
