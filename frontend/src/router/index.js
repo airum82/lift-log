@@ -13,6 +13,7 @@ export default new Router({
     {
       path: '/',
       name: 'Landing',
+      props: { account: 'account' },
       component: Landing
     },
     {
