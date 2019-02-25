@@ -6,6 +6,7 @@
       v-bind:grabLift="grabLift" 
       v-bind:currentDay="currentDay"
       v-bind:account="account"
+      v-bind:lifts="lifts"
     ></workoutForm>
     <workout v-bind:lifts="lifts" v-bind:addSet="addSet" v-bind:currentDay="currentDay"></workout>
   </section>
@@ -44,9 +45,15 @@
         this.lifts = [...this.lifts, lift]
       },
       fetchCurrentLog() {
-        return fetch(`http://localhost:3000/api/log/${this.currentDay}`)
+        return fetch(`http://localhost:3000/api/log/${this.account.uid}`)
           .then(response => response.json())
-          .then(result => this.lifts = result)
+          .then(result => {
+            console.log(result)
+            const workout = result.find(workout => {
+              return this.currentDay === workout.date;
+            })
+            this.lifts = workout.exercises
+          })
           .catch(err => console.log(err))
       },
       addSet(event, weight, reps) {

@@ -21,7 +21,7 @@
       </div>
     </form>
     <section class="lift-list">
-      <ul v-on:click="addLift(exercise.name)">
+      <ul v-on:click="addLift">
         <li v-for="exercise in exercises">{{ exercise.name }}</li>
       </ul>
     </section>
@@ -31,7 +31,7 @@
 <script>
   export default {
     name: 'workoutForm',
-    props: [ "grabLift", "currentDay", "account"],
+    props: [ "grabLift", "currentDay", "account", "lifts"],
     data: () => {
       return {
         muscleGroup: 'Select Muscle Group',
@@ -82,20 +82,21 @@
           .then(result => this.exercises = result)
           .catch(err => this.err = err)
       },
-      addLift(name) {
-        // const name = (event.target).innerText;
+      addLift(event) {
+        const name = (event.target).innerText;
         const lift = {
           name,
           sets: []
         }
-        this.grabLift(lift);
         this.addLiftToDb(lift)
+          .then(() => this.grabLift(lift))
+          .catch(err => console.log(err))
       },
       addLiftToDb(lift) {
-        fetch(`http://localhost:3000/api/log/${this.currentDay}/new`, {
+        return fetch(`http://localhost:3000/api/log/${this.account.uid}/${this.currentDay}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json'},
-          body: JSON.stringify(lift)
+          body: JSON.stringify([...this.lifts, lift])
         })
         .then(response => response.json())
         .then(result => console.log(result))
@@ -103,6 +104,7 @@
       }
     },
     mounted() {
+      
     }
   }
 </script>

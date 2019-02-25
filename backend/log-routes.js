@@ -61,21 +61,21 @@ module.exports = {
       }
     )
   },
-  AddLift: (req, res) => {
+  AddExercise: (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
-    const date = req.params.date;
-    const lift = req.body;
+    const { date, uid } = req.params;
+    const exercises = req.body;
     mongoClient.connect(url, useNewUrlParser,
       (err, db) => {
         if (err) {
           console.log('There was an error: ', err);
         } else {
           const dbo = db.db(liftDb);
-          dbo.collection(date).insertOne(lift, (err, result) => {
+          dbo.collection(uid).updateOne({ date }, { $set: { exercises } }, (err, result) => {
             if(err) throw err;
             console.log('new lift added!');
             db.close();
-            return res.status(201).json(`${lift.name} was added!`)
+            return res.status(201).json('new exercises was added')
           })
         }
       }

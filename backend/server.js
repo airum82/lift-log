@@ -20,7 +20,7 @@ app.post('/api/bodyGroups/:group/new', groupRoutes.createNewExercise)
 //workout endpoints
 app.get('/api/log/:uid', logRoutes.fetchLogs);
 app.post('/api/log/:date', logRoutes.createNewLog);
-app.post('/api/log/:date/new', logRoutes.AddLift);
+app.post('/api/log/:uid/:date', logRoutes.AddExercise);
 app.post('/api/createUser', logRoutes.createUser);
 app.put('/api/log/:date', logRoutes.addSet);
 app.delete('/api/log/:date', logRoutes.deleteLift);
