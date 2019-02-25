@@ -19,6 +19,7 @@ export default new Router({
     {
       path: '/WorkoutContainer',
       name: 'WorkoutContainer',
+      props: true,
       component: WorkoutContainer
     },
     {

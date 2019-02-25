@@ -5,16 +5,34 @@ const liftDb = 'liftLog';
 const useNewUrlParser = { useNewUrlParser: true };
 
 module.exports = {
-  fetchLog: (req, res) => {
+  createUser: (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
-    const date = req.params.date;
+    const { uid } = req.body;
+    mongoClient.connect(url, useNewUrlParser,
+      (err, db) => {
+        if(err) {
+          console.log('there was an error')
+        } else {
+          const dbo = db.db(liftDb);
+          dbo.createCollection(uid, (err, result) => {
+            if(err) throw err;
+            db.close();
+            return res.status(200).json('new user created!')
+          })
+        }
+      })
+  },
+  fetchLogs: (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    const { uid } = req.params;
+    console.log(uid)
     mongoClient.connect(url, useNewUrlParser,
       (err, db) => {
         if(err) {
           console.log('there was an error:', err);
         } else {
           const dbo = db.db(liftDb);
-          dbo.collection(date).find({}).toArray((err, result) => {
+          dbo.collection(uid).find({}).toArray((err, result) => {
             if(err) throw err;
             db.close();
             return res.status(200).json(result)
@@ -25,36 +43,19 @@ module.exports = {
   },
   createNewLog: (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
-    const date = req.params.date
+    const date = req.params.date;
+    const { uid } = req.body;
     mongoClient.connect(url, useNewUrlParser,
       (err, db) => {
         if(err) {
           console.log('there was an error:', err);
         } else {
           const dbo = db.db(liftDb);
-          dbo.createCollection(date, (err, result) => {
+          dbo.collection(uid).insertOne({ date }, (err, result) => {
             if(err) throw err;
-            console.log('collection created');
+            console.log('new log added')
             db.close();
-            return res.status(201).json('new log created!')
-          })
-        }
-      }
-    )
-  },
-  fetchAllLogs: (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*')
-    mongoClient.connect(url, useNewUrlParser,
-      (err, db) => {
-        if(err) {
-          console.log('there was an error: ', err)
-        }
-        else {
-          const dbo = db.db(liftDb);
-          dbo.listCollections().toArray((err, result) => {
-            if(err) throw err;
-            db.close()
-            return res.status(200).json(result);
+            return res.status(200).json('new log added for' + uid)
           })
         }
       }

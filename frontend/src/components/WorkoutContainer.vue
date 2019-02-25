@@ -2,7 +2,11 @@
   <section>
     <button @click="goBack">back</button>
     <p>Let's start a new workout</p>
-    <workoutForm v-bind:grabLift="grabLift" v-bind:currentDay="currentDay"></workoutForm>
+    <workoutForm 
+      v-bind:grabLift="grabLift" 
+      v-bind:currentDay="currentDay"
+      v-bind:account="account"
+    ></workoutForm>
     <workout v-bind:lifts="lifts" v-bind:addSet="addSet" v-bind:currentDay="currentDay"></workout>
   </section>
 </template>
@@ -12,6 +16,7 @@
   import Workout from './Workout.vue';
   export default {
     name: 'workout-container',
+    props: ["account"],
     components: {
       workoutForm,
       Workout

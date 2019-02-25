@@ -37,8 +37,23 @@ export default {
       event.preventDefault();
       firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
         .then(user => {
-          this.grabAccount(user)
+          this.grabAccount(user);
+          this.createUserInDb(user.user.uid);
         })
+        .catch(err => console.log(err))
+    },
+    createUserInDb(uid) {
+      fetch('http://localhost:3000/api/createUser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          uid
+        })
+      })
+        .then(res => res.json())
+        .then(result => console.log(result))
         .catch(err => console.log(err))
     }
   }
