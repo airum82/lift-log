@@ -22,6 +22,7 @@
       </div>
     </div>
   </div>
+  <button v-on:click="grabAllLogs">grab logs</button>
   </section>
 </template>
 
@@ -51,6 +52,7 @@
   };
   export default {
     name: 'Log',
+    props: ["account"],
     data() {
       return {
         month: _todayComps.month,
@@ -156,6 +158,12 @@
       },
       movePreviousYear() {
         this.year--;
+      },
+      grabAllLogs() {
+        fetch(`http://localhost:3000/api/log/${this.account.uid}`)
+          .then(res => res.json())
+          .then(result => console.log(result))
+          .catch(err => console.log(err))
       }
     }
   }

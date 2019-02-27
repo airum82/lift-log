@@ -2,7 +2,12 @@
   <section>
     <button @click="goBack">back</button>
     <p>Let's start a new workout</p>
-    <workoutForm v-bind:grabLift="grabLift" v-bind:currentDay="currentDay"></workoutForm>
+    <workoutForm 
+      v-bind:grabLift="grabLift" 
+      v-bind:currentDay="currentDay"
+      v-bind:account="account"
+      v-bind:lifts="lifts"
+    ></workoutForm>
     <workout v-bind:lifts="lifts" v-bind:addSet="addSet" v-bind:currentDay="currentDay"></workout>
   </section>
 </template>
@@ -12,6 +17,7 @@
   import Workout from './Workout.vue';
   export default {
     name: 'workout-container',
+    props: ["account"],
     components: {
       workoutForm,
       Workout
@@ -39,9 +45,15 @@
         this.lifts = [...this.lifts, lift]
       },
       fetchCurrentLog() {
-        return fetch(`http://localhost:3000/api/log/${this.currentDay}`)
+        return fetch(`http://localhost:3000/api/log/${this.account.uid}`)
           .then(response => response.json())
-          .then(result => this.lifts = result)
+          .then(result => {
+            console.log(result)
+            const workout = result.find(workout => {
+              return this.currentDay === workout.date;
+            })
+            this.lifts = workout.exercises
+          })
           .catch(err => console.log(err))
       },
       addSet(event, weight, reps) {
@@ -61,6 +73,16 @@
           }
           return lift
         })
+        fetch(`http://localhost:3000/api/log/${this.account.uid}/${this.currentDay}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.lifts)
+        })
+          .then(res => res.json())
+          .then(result => console.log(result))
+          .catch(err => console.log(err))
       }
     },
     mounted() {

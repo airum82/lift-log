@@ -1,12 +1,31 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view 
+      v-bind:grabAccount="grabAccount"
+      v-bind:account="account"
+    />
   </div>
 </template>
 
 <script>
+import firebase from 'firebase';
 export default {
-  name: 'App'
+  name: 'App',
+  data: () => ({
+    account: {}
+  }),
+  methods: {
+    grabAccount(account) {
+      this.account = account;
+    }
+  },
+  mounted() {
+      firebase.auth().onAuthStateChanged(user => {
+        if(user) {
+          this.account = user;
+        }
+      })
+  }
 }
 </script>
 

@@ -31,7 +31,7 @@
 <script>
   export default {
     name: 'workoutForm',
-    props: [ "grabLift", "currentDay" ],
+    props: [ "grabLift", "currentDay", "account", "lifts"],
     data: () => {
       return {
         muscleGroup: 'Select Muscle Group',
@@ -53,7 +53,10 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
-          }
+          },
+          body: JSON.stringify({
+            uid: this.account.uid
+          })
         })
         .then(response => response.json())
         .then(result => console.log(result))
@@ -85,14 +88,15 @@
           name,
           sets: []
         }
-        this.grabLift(lift);
         this.addLiftToDb(lift)
+          .then(() => this.grabLift(lift))
+          .catch(err => console.log(err))
       },
       addLiftToDb(lift) {
-        fetch(`http://localhost:3000/api/log/${this.currentDay}/new`, {
+        return fetch(`http://localhost:3000/api/log/${this.account.uid}/${this.currentDay}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json'},
-          body: JSON.stringify(lift)
+          body: JSON.stringify([...this.lifts, lift])
         })
         .then(response => response.json())
         .then(result => console.log(result))
@@ -100,6 +104,7 @@
       }
     },
     mounted() {
+      
     }
   }
 </script>
