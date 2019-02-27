@@ -19,6 +19,9 @@
     <div class='week' v-for='week in weeks'>
       <div class='day' :class='{ today: day.isToday }' v-for='day in week'>
         {{ day.label }}
+        <div v-for="log in logs" v-if="log.date === day.label + month + year" v-on:click="copyPreviousWorkout(log)">
+          workout
+        </div>
       </div>
     </div>
   </div>
@@ -52,7 +55,7 @@
   };
   export default {
     name: 'Log',
-    props: ["account"],
+    props: ["account", "logs", "copyPreviousWorkout"],
     data() {
       return {
         month: _todayComps.month,
