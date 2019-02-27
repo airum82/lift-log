@@ -22,7 +22,7 @@ app.get('/api/log/:uid', logRoutes.fetchLogs);
 app.post('/api/log/:date', logRoutes.createNewLog);
 app.post('/api/log/:uid/:date', logRoutes.AddExercise);
 app.post('/api/createUser', logRoutes.createUser);
-app.put('/api/log/:date', logRoutes.addSet);
+app.put('/api/log/:uid/:date', logRoutes.addSet);
 app.delete('/api/log/:date', logRoutes.deleteLift);
 
 app.listen(app.get('port'), () => {

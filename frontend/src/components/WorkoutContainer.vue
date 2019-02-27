@@ -73,6 +73,16 @@
           }
           return lift
         })
+        fetch(`http://localhost:3000/api/log/${this.account.uid}/${this.currentDay}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.lifts)
+        })
+          .then(res => res.json())
+          .then(result => console.log(result))
+          .catch(err => console.log(err))
       }
     },
     mounted() {
