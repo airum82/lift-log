@@ -17,7 +17,7 @@
   import Workout from './Workout.vue';
   export default {
     name: 'workout-container',
-    props: ["account"],
+    props: ["account", "lifts"],
     components: {
       workoutForm,
       Workout
@@ -52,7 +52,7 @@
             const workout = result.find(workout => {
               return this.currentDay === workout.date;
             })
-            this.lifts = workout.exercises
+            if(workout) this.lifts = workout.exercises;
           })
           .catch(err => console.log(err))
       },
