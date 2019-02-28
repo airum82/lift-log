@@ -3,3 +3,16 @@ export const fetchAllLogs = (uid) => (
     .then(response => response.json())
     .catch(err => console.log(err))
 )
+
+export const modifyLifts = (uid, date, lifts) => (
+  fetch(`http://localhost:3000/api/log/${uid}/${date}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(lifts)
+  })
+    .then(res => res.json())
+    .then(result => console.log(result))
+    .catch(err => console.log(err))
+)

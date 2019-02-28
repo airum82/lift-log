@@ -6,9 +6,12 @@
       v-bind:grabLift="grabLift" 
       v-bind:currentDay="currentDay"
       v-bind:account="account"
-      v-bind:lifts="lifts"
+      v-bind:lifts="recordedLifts"
     ></workoutForm>
-    <workout v-bind:lifts="lifts" v-bind:addSet="addSet" v-bind:currentDay="currentDay"></workout>
+    <workout 
+      v-bind:lifts="currentWorkout" 
+      v-bind:addSet="addSet" 
+      v-bind:currentDay="currentDay"></workout>
   </section>
 </template>
 
@@ -26,7 +29,8 @@
     },
     data: function() {
       return {
-        category: ''
+        category: '',
+        currentWorkout: []
       }
     },
     computed: {
@@ -37,9 +41,12 @@
         const year = today.getFullYear().toString();
         return day + month + year;
       },
-      lifts() {
+      recordedLifts() {
         const log = this.fetchCurrentLog(this.logs, this.currentDay);
-        if(log) return log.exercises;
+        if(log) {
+          this.currentWorkout = [...this.currentWorkout,...log.exercises]
+          return log.exercises
+        }
         else return [];
       }
     },
@@ -48,7 +55,7 @@
         this.$router.back();
       },
       grabLift(lift) {
-        this.lifts = [...this.lifts, lift]
+        this.currentWorkout = [...this.currentWorkout, lift]
       },
       fetchCurrentLog(logs, date) {
        return Utils.findCurrentLog(logs, date);
@@ -56,17 +63,8 @@
       addSet(event, weight, reps) {
         event.preventDefault();
         const name = (event.target.parentElement.parentElement.children[0]).innerHTML;
-        this.lifts = Utils.modifyLifts(this.lifts, name, weight, reps)
-        fetch(`http://localhost:3000/api/log/${this.account.uid}/${this.currentDay}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(this.lifts)
-        })
-          .then(res => res.json())
-          .then(result => console.log(result))
-          .catch(err => console.log(err))
+        this.currentWorkout = Utils.modifyLifts(this.currentWorkout, name, weight, reps)
+        API.modifyLifts(this.account.uid, this.currentDay, this.currentWorkout)
       }
     }
   }
