@@ -5,38 +5,35 @@
       v-bind:account="account"
       v-bind:logs="logs"
       v-bind:copyPreviousWorkout="copyPreviousWorkout"
-      v-bind:lifts="lifts"
+      v-bind:previousWorkout="previousWorkout"
     />
   </div>
 </template>
 
 <script>
 import firebase from "firebase";
+import * as API from './API/API-exercises'
 export default {
   name: "App",
   data: () => ({
     account: {},
     logs: [],
-    lifts: []
+    previousWorkout: {}
   }),
   methods: {
     grabAccount(account) {
       this.account = account;
     },
     copyPreviousWorkout(workout) {
-      this.lifts = workout
+      this.previousWorkout = workout
     }
   },
-  mounted() {
+  created() {
+    console.log('app created')
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        fetch(`http://localhost:3000/api/log/${user.uid}`)
-          .then(res => res.json())
-          .then(result => {
-            console.log(result);
-            this.logs = result;
-          })
-          .catch(err => console.log(err));
+        API.fetchAllLogs(user.uid)
+          .then(result => this.logs = result)
         this.account = user;
       }
     });
