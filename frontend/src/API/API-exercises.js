@@ -29,3 +29,18 @@ export const createNewLog = (date, uid) => (
     .then(result => console.log(result))
     .catch(err => console.log(err))
 )
+
+export const createUser = uid => (
+  fetch('http://localhost:3000/api/createUser', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      uid
+    })
+  })
+    .then(res => res.json())
+    .then(result => console.log(result))
+    .catch(err => console.log(err))
+)
