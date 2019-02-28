@@ -28,7 +28,7 @@ The main purpose of this app is to track workouts with detailed metrics. It was 
 - while in backend folder, ```mkdir data```
 - install MongoDb if not there already
 
-## Starup:
+## Startup:
 - to start MongoDb, run ```mongod --dbpath=``` drag data folder into command line
 - cd into backend folder and run ```node server.js```
 - cd into frontend folder and run ```npm start```
