@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import * as API_groups from '../API/API-groups';
+import * as API_exercises from '../API/API-exercises';
   export default {
     name: 'workoutForm',
     props: [ "grabLift", "currentDay", "account", "lifts"],
@@ -41,46 +43,18 @@
       }
     },
     methods: {
-      fetchWorkoutLog() {
-        return fetch('http://localhost:3000/api/log')
-          .then(response => response.json())
-          .then(result => console.log(result))
-          .catch(err => console.log(err)) 
-      },
       startNewWorkout(event) {
         event.preventDefault();
-        return fetch(`http://localhost:3000/api/log/${this.currentDay}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            uid: this.account.uid
-          })
-        })
-        .then(response => response.json())
-        .then(result => console.log(result))
-        .catch(err => console.log(err))
-
+        API_exercises.createNewLog(this.currentDay, this.account.uid)
       },
       createLift(event) {
-        return fetch(`http://localhost:3000/api/bodyGroups/${this.muscleGroup}/new`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-          },
-          body: JSON.stringify({ name: this.exercise })
-        })
-        .then(res => res.json())
-        .then(result => console.log(result))
-        .catch(err => console.log(err))
+        event.preventDefault();
+        API_groups.createExercise(this.muscleGroup, this.exercise)
       },
       fetchLifts() {
-        return fetch(`http://localhost:3000/api/bodyGroups/${this.muscleGroup}`)
-          .then(response => response.json())
+        API_groups.fetchMuscleGroup(this.muscleGroup)
           .then(result => this.exercises = result)
-          .catch(err => this.err = err)
+          .catch(err => console.log(err))
       },
       addLift(event) {
         const name = (event.target).innerText;
@@ -93,18 +67,8 @@
           .catch(err => console.log(err))
       },
       addLiftToDb(lift) {
-        return fetch(`http://localhost:3000/api/log/${this.account.uid}/${this.currentDay}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json'},
-          body: JSON.stringify([...this.lifts, lift])
-        })
-        .then(response => response.json())
-        .then(result => console.log(result))
-        .catch(err => console.log(err));
+        return API_exercises.modifyLifts(this.account.uid, this.currentDay, [...this.lifts, lift])
       }
-    },
-    mounted() {
-      
     }
   }
 </script>

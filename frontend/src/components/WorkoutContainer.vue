@@ -6,18 +6,23 @@
       v-bind:grabLift="grabLift" 
       v-bind:currentDay="currentDay"
       v-bind:account="account"
-      v-bind:lifts="lifts"
+      v-bind:lifts="recordedLifts"
     ></workoutForm>
-    <workout v-bind:lifts="lifts" v-bind:addSet="addSet" v-bind:currentDay="currentDay"></workout>
+    <workout 
+      v-bind:lifts="currentWorkout" 
+      v-bind:addSet="addSet" 
+      v-bind:currentDay="currentDay"></workout>
   </section>
 </template>
 
 <script>
+  import * as API from '../API/API-exercises';
+  import * as Utils from '../Utils';
   import workoutForm from './workoutForm.vue';
   import Workout from './Workout.vue';
   export default {
     name: 'workout-container',
-    props: ["account", "lifts"],
+    props: ["account", "previousWorkout", "logs"],
     components: {
       workoutForm,
       Workout
@@ -25,7 +30,7 @@
     data: function() {
       return {
         category: '',
-        lifts: []
+        currentWorkout: []
       }
     },
     computed: {
@@ -35,6 +40,14 @@
         const month = (today.getMonth() + 1).toString();
         const year = today.getFullYear().toString();
         return day + month + year;
+      },
+      recordedLifts() {
+        const log = this.fetchCurrentLog(this.logs, this.currentDay);
+        if(log) {
+          this.currentWorkout = [...this.currentWorkout,...log.exercises]
+          return log.exercises
+        }
+        else return [];
       }
     },
     methods: {
@@ -42,51 +55,17 @@
         this.$router.back();
       },
       grabLift(lift) {
-        this.lifts = [...this.lifts, lift]
+        this.currentWorkout = [...this.currentWorkout, lift]
       },
-      fetchCurrentLog() {
-        return fetch(`http://localhost:3000/api/log/${this.account.uid}`)
-          .then(response => response.json())
-          .then(result => {
-            console.log(result)
-            const workout = result.find(workout => {
-              return this.currentDay === workout.date;
-            })
-            if(workout) this.lifts = workout.exercises;
-          })
-          .catch(err => console.log(err))
+      fetchCurrentLog(logs, date) {
+       return Utils.findCurrentLog(logs, date);
       },
       addSet(event, weight, reps) {
         event.preventDefault();
         const name = (event.target.parentElement.parentElement.children[0]).innerHTML;
-        this.lifts = this.lifts.map(lift => {
-          if(lift.name === name) {
-            return {
-              name,
-              sets: [
-                ...lift.sets, {
-                  weight,
-                  reps
-                }
-              ]
-            }
-          }
-          return lift
-        })
-        fetch(`http://localhost:3000/api/log/${this.account.uid}/${this.currentDay}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(this.lifts)
-        })
-          .then(res => res.json())
-          .then(result => console.log(result))
-          .catch(err => console.log(err))
+        this.currentWorkout = Utils.modifyLifts(this.currentWorkout, name, weight, reps)
+        API.modifyLifts(this.account.uid, this.currentDay, this.currentWorkout)
       }
-    },
-    mounted() {
-      this.fetchCurrentLog();
     }
   }
 </script>
