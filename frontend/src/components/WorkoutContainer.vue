@@ -40,6 +40,7 @@
       lifts() {
         const log = this.fetchCurrentLog(this.logs, this.currentDay);
         if(log) return log.exercises;
+        else return [];
       }
     },
     methods: {
@@ -55,20 +56,7 @@
       addSet(event, weight, reps) {
         event.preventDefault();
         const name = (event.target.parentElement.parentElement.children[0]).innerHTML;
-        this.lifts = this.lifts.map(lift => {
-          if(lift.name === name) {
-            return {
-              name,
-              sets: [
-                ...lift.sets, {
-                  weight,
-                  reps
-                }
-              ]
-            }
-          }
-          return lift
-        })
+        this.lifts = Utils.modifyLifts(this.lifts, name, weight, reps)
         fetch(`http://localhost:3000/api/log/${this.account.uid}/${this.currentDay}`, {
           method: 'POST',
           headers: {
