@@ -6,7 +6,8 @@
       v-bind:grabLift="grabLift" 
       v-bind:currentDay="currentDay"
       v-bind:account="account"
-      v-bind:lifts="recordedLifts"
+      v-bind:lifts="currentWorkout"
+      v-bind:dailyRecord="recordedLifts"
     ></workoutForm>
     <section>
       <workout v-for="lift in currentWorkout"
@@ -47,7 +48,7 @@
       recordedLifts() {
         const log = this.fetchCurrentLog(this.logs, this.currentDay);
         if(log) {
-          this.currentWorkout = [...this.currentWorkout,...log.exercises]
+          if(!this.currentWorkout.length) this.currentWorkout = [...this.currentWorkout,...log.exercises];
           return log.exercises
         }
         else return [];

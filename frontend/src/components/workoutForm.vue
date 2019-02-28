@@ -33,7 +33,7 @@ import * as API_groups from '../API/API-groups';
 import * as API_exercises from '../API/API-exercises';
   export default {
     name: 'workoutForm',
-    props: [ "grabLift", "currentDay", "account", "lifts"],
+    props: [ "grabLift", "currentDay", "account", "lifts", "dailyRecord"],
     data: () => {
       return {
         muscleGroup: 'Select Muscle Group',
