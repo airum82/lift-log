@@ -25,11 +25,11 @@
       </div>
     </div>
   </div>
-  <button v-on:click="grabAllLogs">grab logs</button>
   </section>
 </template>
 
 <script>
+import * as API from '../API/API-exercises';
   const _daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   const _weekdayLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const _weekdayLength = 3;
@@ -161,12 +161,6 @@
       },
       movePreviousYear() {
         this.year--;
-      },
-      grabAllLogs() {
-        fetch(`http://localhost:3000/api/log/${this.account.uid}`)
-          .then(res => res.json())
-          .then(result => console.log(result))
-          .catch(err => console.log(err))
       }
     }
   }
