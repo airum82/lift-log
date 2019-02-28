@@ -8,10 +8,13 @@
       v-bind:account="account"
       v-bind:lifts="recordedLifts"
     ></workoutForm>
-    <workout 
-      v-bind:lifts="currentWorkout" 
-      v-bind:addSet="addSet" 
-      v-bind:currentDay="currentDay"></workout>
+    <section>
+      <workout v-for="lift in currentWorkout"
+        v-bind:lift="lift" 
+        v-bind:addSet="addSet" 
+        v-bind:currentDay="currentDay">
+      </workout>
+    </section>
   </section>
 </template>
 
